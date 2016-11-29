@@ -19,7 +19,7 @@ func (n *NodeAbstractCountResource) EvalTree() EvalNode {
 	// into more computed values.
 	var evalCountCheckComputed EvalNode
 	if !n.Validate {
-		evalCountCheckComputed = &EvalCountCheckComputed{Resource: n.Config}
+		evalCountCheckComputed = &EvalCountFixComputed{Resource: n.Config}
 	}
 
 	return &EvalSequence{

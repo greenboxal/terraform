@@ -81,6 +81,8 @@ type Resource struct {
 	Provider     string
 	DependsOn    []string
 	Lifecycle    ResourceLifecycle
+
+	DeferCountComputation bool
 }
 
 // Copy returns a copy of this Resource. Helpful for avoiding shared
@@ -211,6 +213,10 @@ func (r *Module) Id() string {
 
 // Count returns the count of this resource.
 func (r *Resource) Count() (int, error) {
+	if r.DeferCountComputation {
+		return 1, nil
+	}
+
 	raw := r.RawCount.Value()
 	count, ok := r.RawCount.Value().(string)
 	if !ok {
