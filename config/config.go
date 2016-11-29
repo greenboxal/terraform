@@ -86,6 +86,8 @@ type Resource struct {
 	Provider     string
 	DependsOn    []string
 	Lifecycle    ResourceLifecycle
+
+	DeferCountComputation bool
 }
 
 // Copy returns a copy of this Resource. Helpful for avoiding shared
@@ -225,12 +227,20 @@ func (r *Resource) Count() (int, error) {
 	raw := r.RawCount.Value()
 	count, ok := r.RawCount.Value().(string)
 	if !ok {
+		if r.DeferCountComputation {
+			return 1, nil
+		}
+
 		return 0, fmt.Errorf(
 			"expected count to be a string or int, got %T", raw)
 	}
 
 	v, err := strconv.ParseInt(count, 0, 0)
 	if err != nil {
+		if r.DeferCountComputation {
+			return 1, nil
+		}
+
 		return 0, fmt.Errorf(
 			"cannot parse %q as an integer",
 			count,
@@ -593,18 +603,18 @@ func (c *Config) Validate() tfdiags.Diagnostics {
 					"%s: resource count can't reference count variable: %s",
 					n, v.FullKey(),
 				))
-			case *SimpleVariable:
-				diags = diags.Append(fmt.Errorf(
-					"%s: resource count can't reference variable: %s",
-					n, v.FullKey(),
-				))
-
-			// Good
 			case *ModuleVariable:
+				// Good
 			case *ResourceVariable:
+				// Good
 			case *TerraformVariable:
+				// Good
+			case *SimpleVariable:
+				// Good
 			case *UserVariable:
+				// Good
 			case *LocalVariable:
+				// Good
 
 			default:
 				diags = diags.Append(fmt.Errorf(

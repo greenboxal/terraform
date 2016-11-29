@@ -65,6 +65,11 @@ func (w *ContextGraphWalker) EnterPath(path []string) EvalContext {
 	w.interpolaterVars[key] = variables
 	w.interpolaterVarLock.Unlock()
 
+	ignoreMissingCount := false
+	if w.Operation == walkInput || w.Operation == walkValidate || w.Operation == walkRefresh || w.Operation == walkPlan {
+		ignoreMissingCount = true
+	}
+
 	ctx := &BuiltinEvalContext{
 		StopContext:         w.StopContext,
 		PathValue:           path,
@@ -91,6 +96,7 @@ func (w *ContextGraphWalker) EnterPath(path []string) EvalContext {
 		},
 		InterpolaterVars:    w.interpolaterVars,
 		InterpolaterVarLock: &w.interpolaterVarLock,
+		IgnoreMissingCount:  ignoreMissingCount,
 	}
 
 	w.contexts[key] = ctx

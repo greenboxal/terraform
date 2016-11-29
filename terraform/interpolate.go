@@ -796,8 +796,9 @@ func (i *Interpolater) resourceCountMax(
 		}
 
 		count, err := cr.Count()
+
 		if err != nil {
-			return 0, err
+			return 1, nil
 		}
 
 		return count, nil
