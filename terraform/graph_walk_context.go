@@ -67,7 +67,7 @@ func (w *ContextGraphWalker) EnterPath(path []string) EvalContext {
 	w.interpolaterVarLock.Unlock()
 
 	ignoreMissingCount := false
-	if w.Operation == walkInput || w.Operation == walkValidate {
+	if w.Operation == walkInput || w.Operation == walkValidate || w.Operation == walkRefresh || w.Operation == walkPlan {
 		ignoreMissingCount = true
 	}
 
