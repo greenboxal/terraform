@@ -509,17 +509,17 @@ func (c *Config) Validate() error {
 					"%s: resource count can't reference count variable: %s",
 					n,
 					v.FullKey()))
-			case *SimpleVariable:
-				errs = append(errs, fmt.Errorf(
-					"%s: resource count can't reference variable: %s",
-					n,
-					v.FullKey()))
 
-			// Good
 			case *ModuleVariable:
+				// Good
 			case *ResourceVariable:
+				// Good
 			case *TerraformVariable:
+				// Good
+			case *SimpleVariable:
+				// Good
 			case *UserVariable:
+				// Good
 
 			default:
 				errs = append(errs, fmt.Errorf(
